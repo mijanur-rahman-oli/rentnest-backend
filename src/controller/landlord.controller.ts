@@ -4,9 +4,6 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { sendSuccess } from "../utils/apiResponse";
 import { ApiError } from "../utils/apiError";
 
-/**
- * POST /api/landlord/properties
- */
 export const createProperty = asyncHandler(async (req: Request, res: Response) => {
   const landlordId = req.user!.id;
   const data = req.body;
@@ -23,9 +20,6 @@ export const createProperty = asyncHandler(async (req: Request, res: Response) =
   return sendSuccess(res, 201, "Property listing created successfully", property);
 });
 
-/**
- * GET /api/landlord/properties - landlord's own listings
- */
 export const getMyProperties = asyncHandler(async (req: Request, res: Response) => {
   const landlordId = req.user!.id;
   const properties = await prisma.property.findMany({
@@ -45,9 +39,6 @@ async function assertOwnership(propertyId: string, landlordId: string) {
   return property;
 }
 
-/**
- * PUT /api/landlord/properties/:id
- */
 export const updateProperty = asyncHandler(async (req: Request, res: Response) => {
   const landlordId = req.user!.id;
   const { id } = req.params;
@@ -62,9 +53,6 @@ export const updateProperty = asyncHandler(async (req: Request, res: Response) =
   return sendSuccess(res, 200, "Property updated successfully", updated);
 });
 
-/**
- * DELETE /api/landlord/properties/:id
- */
 export const deleteProperty = asyncHandler(async (req: Request, res: Response) => {
   const landlordId = req.user!.id;
   const { id } = req.params;
@@ -76,9 +64,6 @@ export const deleteProperty = asyncHandler(async (req: Request, res: Response) =
   return sendSuccess(res, 200, "Property removed successfully", null);
 });
 
-/**
- * GET /api/landlord/requests - all rental requests for landlord's properties
- */
 export const getLandlordRequests = asyncHandler(async (req: Request, res: Response) => {
   const landlordId = req.user!.id;
 
@@ -94,9 +79,6 @@ export const getLandlordRequests = asyncHandler(async (req: Request, res: Respon
   return sendSuccess(res, 200, "Rental requests fetched successfully", requests);
 });
 
-/**
- * PATCH /api/landlord/requests/:id - approve or reject
- */
 export const updateRequestStatus = asyncHandler(async (req: Request, res: Response) => {
   const landlordId = req.user!.id;
   const { id } = req.params;

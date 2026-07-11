@@ -4,9 +4,6 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { sendSuccess } from "../utils/apiResponse";
 import { ApiError } from "../utils/apiError";
 
-/**
- * POST /api/rentals - tenant submits a rental request
- */
 export const createRentalRequest = asyncHandler(async (req: Request, res: Response) => {
   const tenantId = req.user!.id;
   const { propertyId, moveInDate, durationMonths, message } = req.body as {
@@ -49,9 +46,6 @@ export const createRentalRequest = asyncHandler(async (req: Request, res: Respon
   return sendSuccess(res, 201, "Rental request submitted successfully", rentalRequest);
 });
 
-/**
- * GET /api/rentals - tenant's own requests (pending/approved/rejected/etc.)
- */
 export const getMyRentalRequests = asyncHandler(async (req: Request, res: Response) => {
   const tenantId = req.user!.id;
   const requests = await prisma.rentalRequest.findMany({

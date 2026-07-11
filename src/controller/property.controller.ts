@@ -57,9 +57,7 @@ export const getProperties = asyncHandler(async (req: Request, res: Response) =>
   });
 });
 
-/**
- * GET /api/properties/:id
- */
+
 export const getPropertyById = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 

@@ -82,12 +82,6 @@ export const createPayment = asyncHandler(async (req: Request, res: Response) =>
   });
 });
 
-/**
- * POST /api/payments/confirm
- * Confirms a payment by re-checking the Stripe session status. In production
- * this would typically be driven by a Stripe webhook, but a manual confirm
- * endpoint is provided for callback/testing flows via Postman.
- */
 export const confirmPayment = asyncHandler(async (req: Request, res: Response) => {
   const { sessionId } = req.body as { sessionId: string };
 
@@ -132,11 +126,6 @@ export const confirmPayment = asyncHandler(async (req: Request, res: Response) =
   return sendSuccess(res, 200, "Payment confirmed successfully", updatedPayment);
 });
 
-/**
- * POST /api/payments/webhook
- * Stripe webhook endpoint (alternative/production path to /confirm).
- * Requires raw body parsing — wired up separately in app.ts.
- */
 export const stripeWebhook = asyncHandler(async (req: Request, res: Response) => {
   const sig = req.headers["stripe-signature"] as string;
   let event;
@@ -185,9 +174,7 @@ export const stripeWebhook = asyncHandler(async (req: Request, res: Response) =>
   res.json({ received: true });
 });
 
-/**
- * GET /api/payments - authenticated user's payment history
- */
+
 export const getMyPayments = asyncHandler(async (req: Request, res: Response) => {
   const tenantId = req.user!.id;
   const payments = await prisma.payment.findMany({
@@ -198,9 +185,7 @@ export const getMyPayments = asyncHandler(async (req: Request, res: Response) =>
   return sendSuccess(res, 200, "Payment history fetched successfully", payments);
 });
 
-/**
- * GET /api/payments/:id
- */
+
 export const getPaymentById = asyncHandler(async (req: Request, res: Response) => {
   const tenantId = req.user!.id;
   const { id } = req.params;
