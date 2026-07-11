@@ -46,7 +46,7 @@ export const getProperties = asyncHandler(async (req: Request, res: Response) =>
     prisma.property.count({ where }),
   ]);
 
-  return sendSuccess(res, 200, "Properties fetched successfully", {
+  return sendSuccess(res, 200, "Properties fetched successfully ", {
     properties,
     pagination: {
       total,
@@ -68,7 +68,7 @@ export const getPropertyById = asyncHandler(async (req: Request, res: Response) 
       landlord: { select: { id: true, name: true, phone: true, email: true } },
       reviews: {
         include: { tenant: { select: { id: true, name: true } } },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: "asc" },
       },
     },
   });
