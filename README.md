@@ -1,4 +1,4 @@
-# RentNest — Backend API
+# RentNest Backend
 
 A backend API for a rental property marketplace. Landlords list properties, tenants browse and request rentals, payments are processed via **Stripe**, and admins moderate the whole platform.
 
