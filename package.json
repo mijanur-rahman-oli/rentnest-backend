@@ -14,13 +14,7 @@
     "prisma:studio": "prisma studio",
     "seed": "ts-node prisma/seed.ts"
   },
-  "keywords": [
-    "rental",
-    "marketplace",
-    "api",
-    "express",
-    "prisma"
-  ],
+  "keywords": ["rental", "marketplace", "api", "express", "prisma"],
   "author": "Mijanur Rahman Oli",
   "license": "MIT",
   "dependencies": {
