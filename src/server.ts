@@ -12,10 +12,10 @@ async function main() {
     console.log("✅ Connected to database");
 
     app.listen(PORT, () => {
-      console.log(`🚀 RentNest API listening on port ${PORT} [${process.env.NODE_ENV || "development"}]`);
+      console.log(`RentNest API listening on port ${PORT} [${process.env.NODE_ENV || "development"}]`);
     });
   } catch (err) {
-    console.error("❌ Failed to start server:", err);
+    console.error("Failed to start server:", err);
     process.exit(1);
   }
 }

@@ -18,8 +18,6 @@ app.use(
 );
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
-// Stripe webhook needs the raw body for signature verification, so it must
-// be registered BEFORE express.json() and outside the main JSON-parsed routes.
 app.post("/api/payments/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 
 app.use(express.json());
@@ -28,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req: Request, res: Response) => {
   res.json({
     success: true,
-    message: "RentNest API is running 🏠",
+    message: "RentNest API is running",
     data: { docs: "/api/health" },
   });
 });
