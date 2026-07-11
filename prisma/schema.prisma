@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  TENANT
+  LANDLORD
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
+enum PropertyType {
+  APARTMENT
+  HOUSE
+  STUDIO
+  ROOM
+  VILLA
+  OFFICE
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  UNAVAILABLE
+  RENTED
+}
+
+enum RentalRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PAYMENT_DUE
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentProvider {
+  STRIPE
+  SSLCOMMERZ
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  password     String
+  phone        String?
+  role         Role       @default(TENANT)
+  status       UserStatus @default(ACTIVE)
+  avatarUrl    String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  properties      Property[]      @relation("LandlordProperties")
+  rentalRequests  RentalRequest[] @relation("TenantRentalRequests")
+  reviews         Review[]        @relation("TenantReviews")
+  payments        Payment[]       @relation("TenantPayments")
+
+  @@map("users")
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  slug      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  properties Property[]
+
+  @@map("categories")
+}
+
+model Property {
+  id            String         @id @default(uuid())
+  title         String
+  description   String
+  type          PropertyType
+  status        PropertyStatus @default(AVAILABLE)
+  price         Float
+  bedrooms      Int            @default(0)
+  bathrooms     Int            @default(0)
+  areaSqft      Float?
+  address       String
+  city          String
+  region        String?
+  country       String         @default("Bangladesh")
+  amenities     String[]       @default([])
+  images        String[]       @default([])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  landlordId    String
+  landlord      User           @relation("LandlordProperties", fields: [landlordId], references: [id], onDelete: Cascade)
+
+  categoryId    String?
+  category      Category?      @relation(fields: [categoryId], references: [id])
+
+  rentalRequests RentalRequest[]
+  reviews        Review[]
+
+  @@index([city, price, type])
+  @@map("properties")
+}
+
+model RentalRequest {
+  id            String               @id @default(uuid())
+  status        RentalRequestStatus  @default(PENDING)
+  moveInDate    DateTime
+  durationMonths Int                 @default(12)
+  message       String?
+  rejectReason  String?
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  tenantId      String
+  tenant        User                 @relation("TenantRentalRequests", fields: [tenantId], references: [id], onDelete: Cascade)
+
+  propertyId    String
+  property      Property             @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  payments      Payment[]
+  review        Review?
+
+  @@map("rental_requests")
+}
+
+model Payment {
+  id                String          @id @default(uuid())
+  transactionId     String          @unique
+  amount            Float
+  currency          String          @default("USD")
+  method            String          @default("card")
+  provider          PaymentProvider @default(STRIPE)
+  status            PaymentStatus   @default(PENDING)
+  providerSessionId String?
+  paidAt            DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  rentalRequestId   String
+  rentalRequest     RentalRequest   @relation(fields: [rentalRequestId], references: [id], onDelete: Cascade)
+
+  tenantId          String
+  tenant            User            @relation("TenantPayments", fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Review {
+  id              String        @id @default(uuid())
+  rating          Int
+  comment         String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  tenantId        String
+  tenant          User          @relation("TenantReviews", fields: [tenantId], references: [id], onDelete: Cascade)
+
+  propertyId      String
+  property        Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  rentalRequestId String        @unique
+  rentalRequest   RentalRequest @relation(fields: [rentalRequestId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
