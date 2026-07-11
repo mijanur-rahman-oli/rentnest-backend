@@ -68,7 +68,7 @@ export const getPropertyById = asyncHandler(async (req: Request, res: Response) 
       landlord: { select: { id: true, name: true, phone: true, email: true } },
       reviews: {
         include: { tenant: { select: { id: true, name: true } } },
-        orderBy: { createdAt: "asc" },
+        orderBy: { createdAt: "desc" },
       },
     },
   });

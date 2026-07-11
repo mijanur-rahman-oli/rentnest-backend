@@ -1,17 +1,16 @@
-/**
- * Custom error class used across the app so every thrown error
- * carries an HTTP status code and optional structured error details.
- */
 export class ApiError extends Error {
   statusCode: number;
   success: boolean;
   errorDetails: unknown;
+  isOperational: boolean;
 
   constructor(statusCode: number, message: string, errorDetails: unknown = null) {
     super(message);
+    this.name = "ApiError";
     this.statusCode = statusCode;
     this.success = false;
     this.errorDetails = errorDetails;
+    this.isOperational = true;
     Error.captureStackTrace(this, this.constructor);
   }
 
@@ -33,6 +32,14 @@ export class ApiError extends Error {
 
   static conflict(message = "Conflict", errorDetails: unknown = null) {
     return new ApiError(409, message, errorDetails);
+  }
+
+  static unprocessable(message = "Unprocessable Entity", errorDetails: unknown = null) {
+    return new ApiError(422, message, errorDetails);
+  }
+
+  static tooManyRequests(message = "Too Many Requests", errorDetails: unknown = null) {
+    return new ApiError(429, message, errorDetails);
   }
 
   static internal(message = "Internal Server Error", errorDetails: unknown = null) {
