@@ -5,7 +5,8 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
+    "postinstall": "prisma generate",
     "start": "node dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
@@ -13,7 +14,13 @@
     "prisma:studio": "prisma studio",
     "seed": "ts-node prisma/seed.ts"
   },
-  "keywords": ["rental", "marketplace", "api", "express", "prisma"],
+  "keywords": [
+    "rental",
+    "marketplace",
+    "api",
+    "express",
+    "prisma"
+  ],
   "author": "Mijanur Rahman Oli",
   "license": "MIT",
   "dependencies": {
